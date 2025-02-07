@@ -1,24 +1,23 @@
 pipeline {
-        agent any
-    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: 'enter the action' ) }.
-     
+    agent any
+    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: 'enter the action' ) }. 
     stages {
-        stage ('gitclone') {
+        stage('git clone') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-ssh-key', url: 'git@github.com:PrashanthMunigala/eks.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/PrashanthMunigala/eks.git']])
             }
         }
-        stage ('Initialize') {
+        stage('Initialize') {
             steps {
                 sh 'terraform init'
             }
         }
-        stage ('validate') {
+        stage('validate') {
             steps {
                 sh 'terraform validate'
             }
         }
-        stage ('plan') {
+        stage('plan') {
             when { expression {
                 return params.ACTION == 'plan'
             }
@@ -27,7 +26,7 @@ pipeline {
                 sh 'terraform plan'
             }
         }
-        stage ('Apply') {
+        stage('apply') {
             when { expression {
                 return params.ACTION == 'apply'
             }
@@ -36,7 +35,7 @@ pipeline {
                 sh 'terraform apply --auto-approve'
             }
         }
-        stage ('Destory') {
+        stage('destory') {
             when { expression {
                 return params.ACTION == 'destroy'
             }
