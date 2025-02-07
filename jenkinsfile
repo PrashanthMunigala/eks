@@ -1,0 +1,42 @@
+pipeline {
+    agent{
+        agent any
+    }
+    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: '') }.
+     
+    stages {
+        stage ('gitclone') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/PrashanthMunigala/springboot-app.git']])
+            }
+        }
+        stage ('Initialize') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+        stage ('validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+        stage ('plan') {
+            steps {
+                sh 'terraform plan'
+            }
+        }
+        stage ('Apply') {
+            when { ACTION 'apply' }
+            steps {
+                sh 'terraform apply --auto-approve'
+            }
+        }
+        stage ('Destory') {
+            when { ACTION 'destroy' }
+            steps {
+                sh 'terraform destroy --auto-approve'
+            }
+        }
+    }
+            
+}
