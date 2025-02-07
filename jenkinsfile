@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage ('gitclone') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/PrashanthMunigala/springboot-app.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github', url: 'https://github.com/PrashanthMunigala/eks.git']])
             }
         }
         stage ('Initialize') {
