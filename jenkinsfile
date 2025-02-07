@@ -1,6 +1,8 @@
 pipeline {
     agent any
-    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: 'enter the action' ) }. 
+    parameters { 
+        choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: 'Enter the action')
+    }
     stages {
         stage('git clone') {
             steps {
@@ -12,38 +14,40 @@ pipeline {
                 sh 'terraform init'
             }
         }
-        stage('validate') {
+        stage('Validate') {
             steps {
                 sh 'terraform validate'
             }
         }
-        stage('plan') {
-            when { expression {
-                return params.ACTION == 'plan'
+        stage('Plan') {
+            when { 
+                expression { 
+                    return params.ACTION == 'plan' 
+                } 
             }
-             }
             steps {
                 sh 'terraform plan'
             }
         }
-        stage('apply') {
-            when { expression {
-                return params.ACTION == 'apply'
+        stage('Apply') {
+            when { 
+                expression { 
+                    return params.ACTION == 'apply' 
+                } 
             }
-             }
             steps {
                 sh 'terraform apply --auto-approve'
             }
         }
-        stage('destory') {
-            when { expression {
-                return params.ACTION == 'destroy'
+        stage('Destroy') {
+            when { 
+                expression { 
+                    return params.ACTION == 'destroy' 
+                } 
             }
-             }
             steps {
                 sh 'terraform destroy --auto-approve'
             }
         }
     }
-            
 }
