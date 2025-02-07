@@ -1,8 +1,7 @@
+
 pipeline {
-    agent{
         agent any
-    }
-    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], description: '') }.
+    parameters { choice(name: 'ACTION', choices: ['apply', 'destroy', 'plan'], enter the action: '') }.
      
     stages {
         stage ('gitclone') {
@@ -21,18 +20,28 @@ pipeline {
             }
         }
         stage ('plan') {
+            when { expression {
+                return params.ACTION == 'plan'
+            }
+             }
             steps {
                 sh 'terraform plan'
             }
         }
         stage ('Apply') {
-            when { ACTION 'apply' }
+            when { expression {
+                return params.ACTION == 'apply'
+            }
+             }
             steps {
                 sh 'terraform apply --auto-approve'
             }
         }
         stage ('Destory') {
-            when { ACTION 'destroy' }
+            when { expression {
+                return params.ACTION == 'destroy'
+            }
+             }
             steps {
                 sh 'terraform destroy --auto-approve'
             }
